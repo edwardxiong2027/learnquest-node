@@ -59,16 +59,38 @@ if %errorlevel% equ 0 (
     echo   [WARN] Ollama may not have started. AI tutoring may not work.
 )
 
-REM Check for phi3 model
-ollama list 2>nul | findstr /i "phi3" >nul
-if %errorlevel% neq 0 (
-    echo   Downloading AI model (2.3 GB)... This is a one-time download.
-    ollama pull phi3
+REM Detect which AI model to use
+REM Priority: phi3:medium (best quality) > llama3.2:3b > phi3 (mini)
+set LEARNQUEST_MODEL=
+for /f "tokens=*" %%m in ('ollama list 2^>nul') do (
+    echo %%m | findstr /i "phi3:medium" >nul && if not defined LEARNQUEST_MODEL set LEARNQUEST_MODEL=phi3:medium
 )
-echo   [OK] AI model ready
+if not defined LEARNQUEST_MODEL (
+    for /f "tokens=*" %%m in ('ollama list 2^>nul') do (
+        echo %%m | findstr /i "llama3.2:3b" >nul && if not defined LEARNQUEST_MODEL set LEARNQUEST_MODEL=llama3.2:3b
+    )
+)
+if not defined LEARNQUEST_MODEL (
+    for /f "tokens=*" %%m in ('ollama list 2^>nul') do (
+        echo %%m | findstr /i "phi3" >nul && if not defined LEARNQUEST_MODEL set LEARNQUEST_MODEL=phi3
+    )
+)
+if not defined LEARNQUEST_MODEL (
+    echo   [WARN] No AI model found. Trying to pull llama3.2:3b...
+    ollama pull llama3.2:3b
+    if %errorlevel% equ 0 (
+        set LEARNQUEST_MODEL=llama3.2:3b
+    ) else (
+        echo   [WARN] No AI model available. AI tutoring will not work.
+        echo          Run the install script from the USB drive first.
+        set LEARNQUEST_MODEL=phi3
+    )
+)
+echo   [OK] AI model: %LEARNQUEST_MODEL%
 
 echo.
 echo   Starting LearnQuest server...
+echo   Using model: %LEARNQUEST_MODEL%
 echo   Open http://localhost:5000 in your browser
 echo   Press Ctrl+C to stop
 echo.

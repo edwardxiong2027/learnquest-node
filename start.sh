@@ -78,19 +78,35 @@ else
     > "$PID_FILE"
 fi
 
-# Check for phi3 model
-if ! ollama list 2>/dev/null | grep -q "phi3"; then
-    echo "  Downloading AI model (2.3 GB)... This is a one-time download."
-    ollama pull phi3
-    if [ $? -ne 0 ]; then
-        echo "  [WARN] Failed to pull phi3 model. AI tutoring may not work."
+# Detect which AI model to use
+# Priority: phi3:medium (best quality) > llama3.2:3b > phi3 (mini)
+AVAILABLE_MODELS=$(ollama list 2>/dev/null)
+if echo "$AVAILABLE_MODELS" | grep -q "phi3:medium"; then
+    export LEARNQUEST_MODEL="phi3:medium"
+    echo "  [OK] AI model: phi3:medium (best for grades 9-12)"
+elif echo "$AVAILABLE_MODELS" | grep -q "llama3.2:3b"; then
+    export LEARNQUEST_MODEL="llama3.2:3b"
+    echo "  [OK] AI model: llama3.2:3b (good for all grades)"
+elif echo "$AVAILABLE_MODELS" | grep -q "phi3"; then
+    export LEARNQUEST_MODEL="phi3"
+    echo "  [OK] AI model: phi3 (mini, good for grades K-8)"
+else
+    echo "  [WARN] No AI model found. Trying to pull llama3.2:3b..."
+    ollama pull llama3.2:3b
+    if [ $? -eq 0 ]; then
+        export LEARNQUEST_MODEL="llama3.2:3b"
+        echo "  [OK] AI model: llama3.2:3b"
+    else
+        echo "  [WARN] No AI model available. AI tutoring will not work."
+        echo "         Run the install script from the USB drive first."
+        export LEARNQUEST_MODEL="phi3"
     fi
 fi
-echo "  [OK] AI model ready"
 
 # Start Node.js server
 echo ""
 echo "  Starting LearnQuest server..."
+echo "  Using model: $LEARNQUEST_MODEL"
 cd "$APP_DIR"
 node server.js &
 NODE_PID=$!

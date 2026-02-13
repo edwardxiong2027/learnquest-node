@@ -8,7 +8,7 @@ const path = require('path');
 // ---------------------------------------------------------------------------
 
 const OLLAMA_BASE = process.env.OLLAMA_HOST || 'http://localhost:11434';
-const MODEL = process.env.LEARNQUEST_MODEL || 'phi3';
+const MODEL = process.env.LEARNQUEST_MODEL || 'llama3.2:3b';
 const REQUEST_TIMEOUT_MS = 120_000; // 2 minutes
 const MAX_RETRIES = 3;
 const RETRY_BACKOFF_MS = 1_000;
