@@ -41,8 +41,8 @@ Desktop.ini
 *.swp
 *.swo
 
-# Firebase (website deployment cache)
-website/.firebase/
+# Website (separate project, deployed independently via Firebase)
+website/
 
 # Python (legacy, removed)
 __pycache__/
