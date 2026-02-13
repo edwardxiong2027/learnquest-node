@@ -1,15 +1,9 @@
-# Python
-app/venv/
-__pycache__/
-*.py[cod]
-*.pyo
-*.egg-info/
-dist/
-build/
-*.egg
+# Node
+node_modules/
+learnquest-app/node_modules/
 
 # Database (generated on setup)
-app/database/learnquest.db
+learnquest-app/database/learnquest.db
 
 # Ollama models (too large, downloaded on setup)
 ollama_models/
@@ -22,8 +16,6 @@ config.json
 
 # Logs
 *.log
-.ollama.log
-.flask.log
 
 # macOS
 .DS_Store
@@ -49,8 +41,11 @@ Desktop.ini
 *.swp
 *.swo
 
-# Node (if any)
-node_modules/
-
 # Firebase (website deployment cache)
 website/.firebase/
+
+# Python (legacy, removed)
+__pycache__/
+*.py[cod]
+*.pyo
+app/

@@ -1,4 +1,4 @@
-// LearnQuest Showcase - Scroll animations and mobile menu
+// LearnQuest Showcase - Multi-page navigation, animations, FAQ, and contact form
 
 document.addEventListener('DOMContentLoaded', () => {
     // Mobile hamburger menu
@@ -15,17 +15,32 @@ document.addEventListener('DOMContentLoaded', () => {
     // Close mobile menu on link click
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.addEventListener('click', () => {
-            navLinks.classList.remove('active');
-            hamburger.classList.remove('active');
+            if (navLinks) navLinks.classList.remove('active');
+            if (hamburger) hamburger.classList.remove('active');
         });
     });
 
-    // Smooth scroll for anchor links
+    // Active nav link detection
+    const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('http')) return;
+        const linkPath = href.replace(/\.html$/, '').replace(/\/$/, '') || '/';
+        if (linkPath === currentPath ||
+            (currentPath === '/' && linkPath === '/') ||
+            (currentPath === '/index' && linkPath === '/')) {
+            link.classList.add('active');
+        }
+    });
+
+    // Smooth scroll for anchor links (guard against null targets)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', (e) => {
-            e.preventDefault();
-            const target = document.querySelector(anchor.getAttribute('href'));
+            const href = anchor.getAttribute('href');
+            if (href === '#') return;
+            const target = document.querySelector(href);
             if (target) {
+                e.preventDefault();
                 target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
@@ -50,9 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
 
-    // Navbar background on scroll
+    // Navbar scroll behavior - transparent only on home page hero
     const nav = document.querySelector('.showcase-nav');
-    if (nav) {
+    const isHomePage = document.querySelector('.hero') !== null;
+    if (nav && isHomePage && !nav.classList.contains('nav-opaque')) {
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
                 nav.classList.add('scrolled');
@@ -68,9 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (entry.isIntersecting) {
                 const el = entry.target;
                 const target = parseInt(el.dataset.count);
-                if (!target) return;
+                if (isNaN(target)) return;
                 let current = 0;
-                const step = Math.ceil(target / 40);
+                const step = Math.ceil(target / 40) || 1;
                 const timer = setInterval(() => {
                     current += step;
                     if (current >= target) {
@@ -101,4 +117,36 @@ document.addEventListener('DOMContentLoaded', () => {
             if (target) target.classList.add('active');
         });
     });
+
+    // FAQ accordion toggle
+    document.querySelectorAll('.faq-question').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const item = btn.closest('.faq-item');
+            const wasOpen = item.classList.contains('open');
+            // Close all FAQ items
+            document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+            // Toggle the clicked one
+            if (!wasOpen) {
+                item.classList.add('open');
+            }
+        });
+    });
+
+    // Contact form -> mailto composer
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = contactForm.querySelector('#contact-name').value.trim();
+            const email = contactForm.querySelector('#contact-email').value.trim();
+            const subject = contactForm.querySelector('#contact-subject').value.trim();
+            const message = contactForm.querySelector('#contact-message').value.trim();
+
+            if (!name || !email || !subject || !message) return;
+
+            const body = `Hi LearnQuest Team,\n\n${message}\n\nBest,\n${name}\n${email}`;
+            const mailtoUrl = `mailto:edwardxiong2027@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoUrl;
+        });
+    }
 });

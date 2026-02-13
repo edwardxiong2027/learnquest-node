@@ -1,0 +1,63 @@
+# Dependencies
+node_modules/
+
+# Database
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Environment
+.env
+.env.local
+.env.production
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+._*
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Build output
+dist/
+build/
+*.exe
+*.app
+*.dmg
+
+# Ollama models (too large for git)
+ollama_models/
+
+# Python virtual environment (if present from Python version)
+venv/
+__pycache__/
+*.pyc
+
+# Package lock (regenerated on install)
+# Uncomment if you prefer not to commit it:
+# package-lock.json
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Temporary files
+tmp/
+temp/
+*.tmp

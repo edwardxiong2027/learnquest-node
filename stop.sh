@@ -1,51 +1,38 @@
 #!/bin/bash
-# LearnQuest Shutdown Script
+# LearnQuest Stop Script
+# Usage: ./stop.sh
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PID_DIR="$SCRIPT_DIR/.pids"
+PID_FILE="$SCRIPT_DIR/.learnquest.pid"
 
-echo "============================================"
-echo "   Stopping LearnQuest..."
-echo "============================================"
 echo ""
+echo "  Stopping LearnQuest..."
 
-# Stop Flask
-if [ -f "$PID_DIR/flask.pid" ]; then
-    FLASK_PID=$(cat "$PID_DIR/flask.pid")
-    if kill -0 $FLASK_PID 2>/dev/null; then
-        kill $FLASK_PID 2>/dev/null
-        echo "  ✓ Flask server stopped."
-    else
-        echo "  Flask server was not running."
-    fi
-    rm -f "$PID_DIR/flask.pid"
+STOPPED_SOMETHING=0
+
+if [ -f "$PID_FILE" ]; then
+    while IFS=: read -r name pid; do
+        if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+            kill "$pid" 2>/dev/null
+            echo "  Stopped $name (PID: $pid)"
+            STOPPED_SOMETHING=1
+        fi
+    done < "$PID_FILE"
+    rm -f "$PID_FILE"
 else
-    # Try to find and kill Flask by port
-    FLASK_PID=$(lsof -ti:5001 2>/dev/null)
-    if [ ! -z "$FLASK_PID" ]; then
-        kill $FLASK_PID 2>/dev/null
-        echo "  ✓ Flask server stopped."
-    else
-        echo "  Flask server was not running."
+    # No PID file found -- try to find and kill by port as a fallback
+    PID=$(lsof -ti:5000 2>/dev/null)
+    if [ -n "$PID" ]; then
+        kill $PID 2>/dev/null
+        echo "  Stopped server on port 5000 (PID: $PID)"
+        STOPPED_SOMETHING=1
     fi
 fi
 
-# Stop Ollama (only if we started it)
-if [ -f "$PID_DIR/ollama.pid" ]; then
-    OLLAMA_PID=$(cat "$PID_DIR/ollama.pid")
-    if kill -0 $OLLAMA_PID 2>/dev/null; then
-        kill $OLLAMA_PID 2>/dev/null
-        echo "  ✓ Ollama stopped."
-    else
-        echo "  Ollama was not running."
-    fi
-    rm -f "$PID_DIR/ollama.pid"
+if [ "$STOPPED_SOMETHING" -eq 1 ]; then
+    echo "  LearnQuest stopped. Safe to remove USB."
 else
-    echo "  Ollama was not started by LearnQuest (leaving it running)."
+    echo "  LearnQuest does not appear to be running."
 fi
 
 echo ""
-echo "============================================"
-echo "   LearnQuest stopped."
-echo "   Safe to remove USB."
-echo "============================================"
