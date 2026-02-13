@@ -70,11 +70,112 @@ LearnQuest is like Khan Academy on a USB stick — but without video and with a 
 
 ---
 
-## Quick Start
+## Installation
 
-### 1. First-Time Setup
+### Option 1: Download from GitHub Releases (Easiest)
 
-The interactive setup wizard detects your OS, checks dependencies, and lets you choose an AI model:
+Go to [**Releases**](https://github.com/edwardxiong2027/LearnQuest/releases) and download the latest version for your platform. Extract and follow the platform-specific instructions below.
+
+### Option 2: Clone with Git
+
+```bash
+git clone https://github.com/edwardxiong2027/LearnQuest.git
+cd LearnQuest
+```
+
+### Option 3: Download ZIP
+
+Click the green **"Code"** button on the [repo page](https://github.com/edwardxiong2027/LearnQuest), then **"Download ZIP"**. Extract to any folder or USB drive.
+
+---
+
+## Setup Guide by Platform
+
+### Windows
+
+1. **Install Python 3.10+** from [python.org/downloads](https://python.org/downloads)
+   - **Important:** Check ✅ **"Add Python to PATH"** during installation
+   - Verify: open Command Prompt and type `python --version`
+
+2. **Install Ollama** from [ollama.com/download](https://ollama.com/download/windows)
+   - Run the Windows installer and follow the prompts
+
+3. **Run Setup** — Open Command Prompt, navigate to the LearnQuest folder:
+   ```batch
+   cd C:\LearnQuest
+   python launch.py setup
+   ```
+   Or simply double-click **`setup.bat`**
+
+4. **Start Learning:**
+   ```batch
+   python launch.py start
+   ```
+   Or double-click **`start.bat`**. Your browser opens to http://localhost:5001
+
+5. **Stop:** `python launch.py stop` or double-click **`stop.bat`**
+
+### macOS
+
+1. **Check Python** — macOS 12+ includes Python 3. Open Terminal:
+   ```bash
+   python3 --version
+   ```
+   If not installed, download from [python.org](https://python.org/downloads)
+
+2. **Install Ollama** from [ollama.com/download](https://ollama.com/download/mac)
+   - Open the `.dmg` and drag Ollama to Applications
+   - Launch Ollama once so it installs the CLI tools
+
+3. **Run Setup:**
+   ```bash
+   cd /path/to/LearnQuest
+   python3 launch.py setup
+   ```
+   Or: `chmod +x setup.sh && ./setup.sh`
+
+4. **Start Learning:**
+   ```bash
+   python3 launch.py start
+   ```
+   Or: `./start.sh` — Opens browser to http://localhost:5001
+
+5. **Stop:** `python3 launch.py stop` or `./stop.sh`
+
+### Linux / Chromebook
+
+> **Chromebook:** Enable Linux first in **Settings → Advanced → Developers → Linux development environment**
+
+1. **Install dependencies:**
+   ```bash
+   sudo apt update && sudo apt install python3 python3-venv git curl -y
+   ```
+
+2. **Install Ollama:**
+   ```bash
+   curl -fsSL https://ollama.com/install.sh | sh
+   ```
+
+3. **Clone and setup:**
+   ```bash
+   git clone https://github.com/edwardxiong2027/LearnQuest.git
+   cd LearnQuest
+   python3 launch.py setup
+   ```
+
+4. **Start Learning:**
+   ```bash
+   python3 launch.py start
+   ```
+   Open http://localhost:5001 in your browser
+
+5. **Stop:** `python3 launch.py stop`
+
+---
+
+## Setup Wizard
+
+For a guided, interactive setup experience, run:
 
 ```bash
 python launch.py wizard
@@ -82,13 +183,13 @@ python launch.py wizard
 
 The wizard will:
 1. Detect your operating system
-2. Check that Python and Ollama are installed (with install instructions if not)
+2. Check that Python and Ollama are installed (with instructions if not)
 3. Let you pick an AI model based on your hardware
 4. Create a virtual environment and install dependencies
-5. Download the AI model to the USB
+5. Download the AI model
 6. Initialize the database
 
-**Model options:**
+**AI Model Options:**
 
 | Model | Size | RAM | Best For |
 |-------|------|-----|----------|
@@ -96,37 +197,6 @@ The wizard will:
 | Llama 3.2 1B | ~1.3 GB | 4 GB+ | K-5, low-spec machines |
 | Llama 3.2 3B | ~2.0 GB | 8 GB+ | K-8, good alternative |
 | Phi-3 Medium | ~7.9 GB | 16 GB+ | K-12, highest quality |
-
-### 2. Start Learning
-
-```bash
-python launch.py start
-```
-
-Opens automatically at **http://localhost:5001**
-
-### 3. Stop
-
-```bash
-python launch.py stop
-```
-
-### Platform-Specific Alternatives
-
-**Mac / Linux (shell scripts):**
-```bash
-chmod +x setup.sh start.sh stop.sh
-./setup.sh    # first time
-./start.sh    # start
-./stop.sh     # stop
-```
-
-**Windows (batch files):**
-```batch
-setup.bat     :: first time
-start.bat     :: start
-stop.bat      :: stop
-```
 
 ---
 
@@ -269,6 +339,12 @@ MIT License — see [LICENSE](LICENSE) for details.
 ## Credits
 
 Built by the **Diamond Bar High School Vibe Coding Club** (Diamond Bar, CA).
+
+| Name | Role | Class |
+|------|------|-------|
+| **Edward Xiong** | President & Tech Lead | DBHS 2027 |
+| **Carol Yan** | Vice President | DBHS 2026 |
+| **Abby Yan** | Vice President | DBHS 2029 |
 
 Our mission: make quality education accessible to every student, regardless of internet access or ability to pay.
 
